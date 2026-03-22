@@ -94,3 +94,27 @@ Eve runs free.
 - All 5 self-improvement scripts execute without crashes
 - Core logic verified: eval logging, metric analysis, discovery scanning, instinct extraction, experiment branching
 - 3 self-eval memos confirmed in Memos (memos/CCDqcsrYUa7RKtFTBkqT2v, memos/NGhUzXG9P6a6Jy7j9Qo9Tn, memos/MTtN3iu7iC6oRacoefg8Ck)
+
+---
+
+### Task 16: Install Lossless Claw (LCM) as ContextEngine Plugin
+**Phase:** Brain v2.0  
+**Status:** COMPLETE  
+**Date:** 2026-03-22  
+
+#### What was done
+- Installed @martian-engineering/lossless-claw v0.5.0 via openclaw plugins install
+- Configured as contextEngine via plugins.slots.contextEngine = "lossless-claw"
+- Plugin config: freshTailCount=32, contextThreshold=0.75, incrementalMaxDepth=-1
+- Session idle extended to 7 days (10080 min) for LCM longevity
+- Pinned in plugins.allow for trust provenance
+- Gateway restarted; LCM loaded successfully (db=/home/nova/.openclaw/lcm.db)
+- Summarization model: zai/glm-5 (default, zero-cost)
+- Config template committed to setup/configs/openclaw-lcm.json
+
+#### Key findings
+- Package name: @martian-engineering/lossless-claw (not bare "lossless-claw")
+- Config goes under plugins.entries.lossless-claw.config, NOT top-level contextEngine
+- Context engine slot selection via plugins.slots.contextEngine
+- LCM tools (lcm_grep, lcm_describe, lcm_expand_query) register at session runtime, not visible in CLI tools list
+- LCM database created at /home/nova/.openclaw/lcm.db (164KB initial)
