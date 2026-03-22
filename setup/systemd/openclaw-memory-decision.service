@@ -1,0 +1,14 @@
+[Unit]
+Description=OpenClaw Memory Decision MCP
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /mnt/ssd/openclaw-brain/workspace/behavior-mcps/memory-decision/server.py --port 9501
+Restart=always
+RestartSec=5
+Environment=PORT=9501
+WorkingDirectory=/mnt/ssd/openclaw-brain/workspace/behavior-mcps/memory-decision
+
+[Install]
+WantedBy=default.target

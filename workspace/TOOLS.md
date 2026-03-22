@@ -44,12 +44,12 @@
 
 ### ragflow
 - type: service
-- endpoint: http://nova-rig:9380/api/v1
-- auth: Bearer token (RAGFLOW_API_KEY)
+- endpoint: http://100.76.233.80:9380/api/v1
+- auth: Bearer YOUR_RAGFLOW_API_KEY
 - capabilities: create_dataset, upload_document, semantic_search, rag_chat
-- datasets: agent-memory, tool-docs, code-knowledge, research, robotics, ops-reference
+- datasets: agent-memory, tool-docs, code-knowledge, research, robotics, ops-reference, luxonis-docs
 - use_when: "deep semantic search across all ingested documents"
-- example: `curl -X POST http://nova-rig:9380/api/v1/retrieval -H "Authorization: Bearer $RAGFLOW_API_KEY" -H "Content-Type: application/json" -d '{"question": "how to calibrate OAK-D", "datasets": ["tool-docs"]}'`
+- example: `curl -X POST http://nova-rig:9380/api/v1/retrieval -H "Authorization: Bearer YOUR_RAGFLOW_API_KEY" -H "Content-Type: application/json" -d '{"question": "how to calibrate OAK-D", "datasets": ["tool-docs"]}'`
 
 ### surfsense
 - type: service

@@ -1,0 +1,14 @@
+[Unit]
+Description=OpenClaw Self-Eval MCP
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /mnt/ssd/openclaw-brain/workspace/behavior-mcps/self-eval/server.py --port 9502
+Restart=always
+RestartSec=5
+Environment=PORT=9502
+WorkingDirectory=/mnt/ssd/openclaw-brain/workspace/behavior-mcps/self-eval
+
+[Install]
+WantedBy=default.target

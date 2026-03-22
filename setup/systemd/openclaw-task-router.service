@@ -1,0 +1,14 @@
+[Unit]
+Description=OpenClaw Task Router MCP
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /mnt/ssd/openclaw-brain/workspace/behavior-mcps/task-router/server.py --port 9500
+Restart=always
+RestartSec=5
+Environment=PORT=9500
+WorkingDirectory=/mnt/ssd/openclaw-brain/workspace/behavior-mcps/task-router
+
+[Install]
+WantedBy=default.target
