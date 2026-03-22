@@ -1,0 +1,27 @@
+[team]
+name = "improvement-swarm"
+description = "Parallel self-improvement experiments"
+backend = "tmux"
+
+[[workers]]
+name = "analyzer"
+agent = "openclaw"
+session = "analyze"
+task = "Analyze recent self-eval data for improvement opportunities"
+
+[[workers]]
+name = "researcher"
+agent = "openclaw"
+session = "research"
+task = "Research solutions for identified bottlenecks"
+blocked_by = ["analyzer"]
+
+[[workers]]
+name = "implementer"
+agent = "claude"
+session = "implement"
+task = "Implement the improvement via experiment branch"
+blocked_by = ["researcher"]
+
+[messaging]
+type = "point-to-point"

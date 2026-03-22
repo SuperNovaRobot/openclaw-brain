@@ -1,0 +1,29 @@
+[team]
+name = "full-stack"
+description = "Parallel backend + frontend + testing development"
+backend = "tmux"
+
+[[workers]]
+name = "backend"
+agent = "claude"
+session = "backend"
+task = ""  # Filled at spawn time
+worktree = true
+
+[[workers]]
+name = "frontend"
+agent = "claude"
+session = "frontend"
+task = ""
+worktree = true
+
+[[workers]]
+name = "tester"
+agent = "claude"
+session = "tester"
+task = ""
+worktree = true
+blocked_by = ["backend", "frontend"]
+
+[messaging]
+type = "point-to-point"

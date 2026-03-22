@@ -1,0 +1,26 @@
+[team]
+name = "research-swarm"
+description = "Parallel research across multiple topics"
+backend = "tmux"
+
+[[workers]]
+name = "researcher-1"
+agent = "openclaw"
+session = "research-1"
+task = ""
+
+[[workers]]
+name = "researcher-2"
+agent = "openclaw"
+session = "research-2"
+task = ""
+
+[[workers]]
+name = "synthesizer"
+agent = "openclaw"
+session = "synthesize"
+task = "Synthesize findings from all researchers"
+blocked_by = ["researcher-1", "researcher-2"]
+
+[messaging]
+type = "point-to-point"
