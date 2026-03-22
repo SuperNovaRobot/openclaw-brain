@@ -1,0 +1,27 @@
+name: jetson-orin
+description: "NVIDIA Jetson Orin — brain machine with separate GPU rig"
+min_gpus: 0
+min_vram_gb: 0
+min_ram_gb: 32
+arch: aarch64
+
+services:
+  nova: [postgres, elasticsearch, redis, ragflow, memos, surfsense, crawl4ai]
+  rig: [vllm]
+
+inference:
+  backend: llamacpp
+  model: nemotron-122b.gguf
+  ctx_size: 131072
+
+features:
+  local_inference: true
+  memory_stack: true
+  coding_delegation: true
+  research: true
+  self_improvement: true
+  swarm: true
+  robotics_sim: true
+  voice: false
+
+notes: "Two-machine setup. Nova runs services, nova-rig runs inference. Jetson handles robotics hardware (USB, serial)."

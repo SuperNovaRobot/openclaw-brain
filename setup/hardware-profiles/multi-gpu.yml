@@ -1,0 +1,27 @@
+name: multi-gpu
+description: "8x GPU workstation — full capabilities"
+min_gpus: 4
+min_vram_gb: 96
+min_ram_gb: 64
+
+services:
+  nova: [postgres, elasticsearch, redis, ragflow, memos, surfsense, crawl4ai]
+  rig: [vllm]
+
+inference:
+  backend: vllm
+  model: nemotron-122b-awq
+  tensor_parallel: 8
+  max_model_len: 1048576
+
+features:
+  local_inference: true
+  memory_stack: true
+  coding_delegation: true
+  research: true
+  self_improvement: true
+  swarm: true
+  robotics_sim: true
+  voice: true
+
+notes: "Full power. 8-way tensor parallel, 1M context window."

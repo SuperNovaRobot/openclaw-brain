@@ -1,0 +1,25 @@
+name: cpu-only
+description: "CPU-only — external API for inference"
+min_gpus: 0
+min_vram_gb: 0
+min_ram_gb: 16
+
+services:
+  local: [postgres, redis, memos]
+
+inference:
+  backend: external
+  endpoint: "${INFERENCE_HOST}"
+  notes: "Uses GLM API or other external LLM API"
+
+features:
+  local_inference: false
+  memory_stack: true
+  coding_delegation: true
+  research: true
+  self_improvement: true
+  swarm: false
+  robotics_sim: false
+  voice: false
+
+notes: "Minimal setup. Requires external API key for inference. Limited memory stack (no ES/RagFlow for RAM savings)."

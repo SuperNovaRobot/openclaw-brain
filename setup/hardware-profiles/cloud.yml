@@ -1,0 +1,26 @@
+name: cloud
+description: "Cloud GPU instance — elastic scaling"
+min_gpus: 1
+min_vram_gb: 24
+min_ram_gb: 32
+
+services:
+  local: [postgres, elasticsearch, redis, ragflow, memos, surfsense, crawl4ai, vllm]
+
+inference:
+  backend: vllm
+  model: nemotron-122b-awq
+  tensor_parallel: "auto"
+  max_model_len: 1048576
+
+features:
+  local_inference: true
+  memory_stack: true
+  coding_delegation: true
+  research: true
+  self_improvement: true
+  swarm: true
+  robotics_sim: false
+  voice: true
+
+notes: "Full features on cloud. A100/H100 recommended. Use docker-compose.single.yml."

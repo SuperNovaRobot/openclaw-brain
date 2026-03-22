@@ -1,0 +1,25 @@
+name: single-gpu
+description: "Single GPU workstation — entry-level local inference"
+min_gpus: 1
+min_vram_gb: 8
+min_ram_gb: 32
+
+services:
+  local: [postgres, elasticsearch, redis, ragflow, memos, surfsense, crawl4ai, vllm]
+
+inference:
+  backend: llamacpp
+  model: "auto-detect"
+  ctx_size: 32768
+
+features:
+  local_inference: true
+  memory_stack: true
+  coding_delegation: true
+  research: true
+  self_improvement: true
+  swarm: false
+  robotics_sim: false
+  voice: false
+
+notes: "All-in-one. Smaller models (7B-70B depending on VRAM). Use docker-compose.single.yml."
