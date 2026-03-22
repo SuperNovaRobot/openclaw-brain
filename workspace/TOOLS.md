@@ -1,6 +1,6 @@
 # TOOLS.md — OpenClaw Capability Registry
 # Auto-updated by the Self-Improvement Controller
-# Last updated: 2026-03-21T00:00:00Z
+# Last updated: 2026-03-22T00:00:00Z
 # Total tools: 15
 
 ## Memory Tools
@@ -28,26 +28,49 @@
 - datasets: agent-memory, tool-docs, code-knowledge, research, robotics
 - use_when: "deep search across all knowledge"
 
-### notebooklm
-- type: mcp
-- server: notebooklm-mcp
-- capabilities: notebook_query, notebook_get, source_list
-- master_notebook: 0f502fd6-fdeb-49bf-bc50-d759bf38483e
-- use_when: "Gemini-powered research, cross-source analysis"
-- rules: "READ-ONLY on master notebook. Only add 10/10 sources."
-
 ### surfsense
 - type: service
-- endpoint: http://localhost:8000
+- runs_on: nova-rig
+- endpoint: http://nova-rig:8000
 - capabilities: search, chat, podcast_generate, connector_sync
 - use_when: "self-hosted research, NotebookLM fallback"
+- notes: "Runs on nova-rig. Backend :8000, frontend :3000."
 
 ### crawl4ai
 - type: service + mcp
-- endpoint: http://localhost:11235
+- runs_on: nova-rig
+- endpoint: http://nova-rig:11235
 - capabilities: crawl_url, crawl_batch, extract_structured
 - use_when: "turn any webpage into clean markdown"
 - output_destinations: [obsidian, ragflow, memos]
+- notes: "Runs on nova-rig. Output feeds into memory stack."
+
+## Research Tools
+
+### notebooklm
+- type: mcp
+- server: notebooklm-mcp
+- setup: setup/scripts/setup-notebooklm-mcp.sh
+- capabilities: notebook_query, notebook_get, notebook_create, source_list, source_add, audio_overview
+- master_notebook: 0f502fd6-fdeb-49bf-bc50-d759bf38483e
+- use_when: "Gemini-powered research, cross-source analysis, discovering connections between concepts"
+- rules: "READ-ONLY on master notebook. Only add 10/10 sources."
+- auth: GOOGLE_APPLICATION_CREDENTIALS or GOOGLE_API_KEY
+- mcp_config: ~/.openclaw/mcp-servers/notebooklm.json
+
+### tavily
+- type: mcp
+- server: npx -y @tavily/mcp-server
+- setup: setup/scripts/setup-tavily-mcp.sh
+- capabilities: search, search_context, search_qna, extract
+- use_when: "web search, current information, fact-checking, URL content extraction"
+- modes:
+  - search: "general web search, max_results 10, search_depth advanced"
+  - search_context: "contextual search for RAG pipelines"
+  - search_qna: "direct factual Q&A, precise answers"
+  - extract: "fetch and extract content from specific URLs"
+- auth: TAVILY_API_KEY
+- mcp_config: ~/.openclaw/mcp-servers/tavily.json
 
 ## Coding Tools
 
@@ -72,11 +95,6 @@
 - command: gws {service} {resource} {action}
 - services: [gmail, calendar, drive, sheets, docs, chat]
 - use_when: "Google Workspace operations"
-
-### tavily
-- type: mcp
-- capabilities: search, search_context, search_qna, extract
-- use_when: "web search, current information, fact-checking"
 
 ### gh
 - type: cli
