@@ -17,9 +17,9 @@ test_skip() { echo "  [SKIP] $1"; SKIP=$((SKIP + 1)); }
 
 # Layer 2: Memos
 echo "Layer 2 (Memos):"
-if curl -sf http://localhost:${MEMOS_PORT:-5230}/api/v1/workspace/profile > /dev/null 2>&1; then
+if curl -sf http://${RIG_HOST:-nova-rig}:${MEMOS_PORT:-5230}/api/v1/workspace/profile > /dev/null 2>&1; then
   # Create test memo
-  MEMO_RESULT=$(curl -sf -X POST "http://localhost:${MEMOS_PORT:-5230}/api/v1/memos" \
+  MEMO_RESULT=$(curl -sf -X POST "http://${RIG_HOST:-nova-rig}:${MEMOS_PORT:-5230}/api/v1/memos" \
     -H "Content-Type: application/json" \
     -d '{"content": "Integration test memo #test-integration-run"}' 2>/dev/null)
   if [ -n "$MEMO_RESULT" ]; then
@@ -29,7 +29,7 @@ if curl -sf http://localhost:${MEMOS_PORT:-5230}/api/v1/workspace/profile > /dev
   fi
   
   # Search by content
-  SEARCH=$(curl -sf "http://localhost:${MEMOS_PORT:-5230}/api/v1/memos" 2>/dev/null)
+  SEARCH=$(curl -sf "http://${RIG_HOST:-nova-rig}:${MEMOS_PORT:-5230}/api/v1/memos" 2>/dev/null)
   if echo "$SEARCH" | grep -q "test-integration-run" 2>/dev/null; then
     test_pass "Search memo by content"
   else
@@ -85,7 +85,7 @@ fi
 # Layer 4: RagFlow
 echo ""
 echo "Layer 4 (RagFlow):"
-RAGFLOW_URL="http://localhost:${RAGFLOW_PORT:-9380}"
+RAGFLOW_URL="http://${RIG_HOST:-nova-rig}:${RAGFLOW_PORT:-9380}"
 if curl -sf "$RAGFLOW_URL/api/v1/datasets" -H "Authorization: Bearer ${RAGFLOW_API_KEY:-changeme}" > /dev/null 2>&1; then
   test_pass "RagFlow API accessible"
   
@@ -103,7 +103,7 @@ fi
 # Layer 5: SurfSense
 echo ""
 echo "Layer 5 (SurfSense):"
-if curl -sf "http://localhost:${SURFSENSE_PORT:-8000}/health" > /dev/null 2>&1; then
+if curl -sf "http://${RIG_HOST:-nova-rig}:${SURFSENSE_PORT:-8000}/health" > /dev/null 2>&1; then
   test_pass "SurfSense health check"
 else
   test_skip "SurfSense not running (expected on ARM64 — needs investigation)"
@@ -112,7 +112,7 @@ fi
 # Ingestion: crawl4ai
 echo ""
 echo "Ingestion (crawl4ai):"
-if curl -sf "http://localhost:${CRAWL4AI_PORT:-11235}/health" > /dev/null 2>&1; then
+if curl -sf "http://${RIG_HOST:-nova-rig}:${CRAWL4AI_PORT:-11235}/health" > /dev/null 2>&1; then
   test_pass "crawl4ai health check"
 else
   test_skip "crawl4ai not running"

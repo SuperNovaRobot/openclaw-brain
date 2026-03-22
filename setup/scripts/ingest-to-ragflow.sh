@@ -15,7 +15,7 @@ FILE_PATH="$2"
 
 source "$(dirname "$0")/../../setup/.env" 2>/dev/null || true
 
-RAGFLOW_URL="http://localhost:${RAGFLOW_PORT:-9380}"
+RAGFLOW_URL="http://${RIG_HOST:-nova-rig}:${RAGFLOW_PORT:-9380}"
 API_KEY="${RAGFLOW_API_KEY:-changeme}"
 
 if [ ! -f "$FILE_PATH" ]; then
