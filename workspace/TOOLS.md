@@ -133,3 +133,11 @@
 - type: data
 - source: EvanLi/Github-Ranking/Top-100-stars.md
 - use_when: "weekly discovery scan for new tools"
+
+## Reference
+
+### nemoclaw
+- type: reference
+- source: NVIDIA/NemoClaw
+- use_when: "reference only — agent architecture patterns, NOT a sandbox"
+- rules: "NemoClaw is optional. Eve runs FREE. No sandboxing constraints."
