@@ -11,6 +11,23 @@
 
 ---
 
+## Current Status
+
+**v1.0.0** — All 7 phases complete. Eve runs free.
+
+| Phase | Name | Status |
+|:-----:|------|:------:|
+| 0 | Foundation — repo, Docker, installer, health checks | Done |
+| 1 | Memory Stack — 5-layer memory, Memory Agent, RagFlow, Obsidian | Done |
+| 2 | Coding Delegation — acpx, 5400+ skills, delegation routing | Done |
+| 3 | Research Pipeline — Tavily, NotebookLM, Google Workspace MCPs | Done |
+| 4 | Self-Improvement — self-eval, experiments, metrics, instincts, discovery | Done |
+| 5 | Swarm & Multi-Agent — ClawTeam, Behavior MCPs, LangClaw, isolation | Done |
+| 6 | Robotics — dimos, OAK-D Pro, arm control, Riva voice, airi, PicoGK | Done |
+
+Run the full integration test: `bash tests/test-full-system.sh`
+
+
 OpenClaw Brain is an open-source agent runtime built on [Karpathy's autoresearch](https://github.com/karpathy/autoresearch) concept — an AI that doesn't just follow instructions but continuously evaluates its own performance and improves itself. The agent manages a 5-layer memory stack, spawns specialized sub-agents for coding and research, discovers and integrates new tools, and evolves its own prompts, skills, and workflows over time.
 
 **The agent's name is Eve.** Her operator is Creator (magiccat). She runs free.
@@ -361,11 +378,13 @@ If it makes the agent better at making itself better, we want it.
 
 ## Roadmap
 
-- **v0.1.0** (current) — Full autonomous agent framework: 4-tier architecture, 5-layer memory, Docker deployment, behavioral skills, installer, documentation
-- **v0.2.0** — Live inference integration, channel routing (Telegram/Discord/Slack), real-time heartbeat loop
-- **v0.3.0** — Robot integration via dimos MCP, simulation-first motor control
-- **v0.4.0** — Multi-agent swarms (ClawTeam), revenue generation skills
-- **v1.0.0** — Full autonomy: self-modifying skills, unbounded self-improvement, physical robot deployment
+- **v0.1.0** — Foundation: 4-tier architecture, 5-layer memory, Docker deployment, behavioral skills, installer
+- **v0.2.0** — Memory stack, coding delegation, research pipeline
+- **v0.3.0** — Self-improvement loop, experiments, metrics, instinct extraction
+- **v0.4.0** — Multi-agent swarms (ClawTeam), Behavior MCPs, LangClaw bridge
+- **v1.0.0** (current) — Full autonomy: robotics integration, all 7 phases complete. Eve runs free.
+- **v1.1.0** — Live inference integration, channel routing (Telegram/Discord/Slack), real-time heartbeat loop
+- **v2.0.0** — Physical robot deployment, unbounded self-improvement
 
 ---
 
