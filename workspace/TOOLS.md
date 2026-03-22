@@ -1,7 +1,7 @@
 # TOOLS.md — OpenClaw Capability Registry
 # Auto-updated by the Self-Improvement Controller
 # Last updated: 2026-03-22T00:00:00Z
-# Total tools: 15
+# Total tools: 18
 
 ## Memory Tools
 
@@ -103,23 +103,50 @@
 - command: gh {resource} {action}
 - use_when: "GitHub operations"
 
-## Robotics Tools (Phase 6+)
+## Robotics Tools
 
 ### dimos
 - type: mcp + cli
-- capabilities: simulation, motor_control, perception, navigation
+- setup: setup/scripts/setup-dimos.sh
+- capabilities: simulation, motor_control, perception, navigation, validate_motion, emergency_stop
 - use_when: "robot commands, simulation, sensor data"
+- skill: workspace/skills/robotics-simulation.SKILL.md
+- mcp_config: ~/.openclaw/mcp-servers/dimos.json
+- notes: "ALWAYS simulate before commanding real hardware."
 
 ### riva
 - type: sdk
 - module: riva.client
-- capabilities: asr_streaming, tts_synthesis
-- use_when: "voice input/output for the robot"
+- setup: setup/scripts/setup-riva.sh
+- server: nova-rig:50051 (gRPC)
+- client: glm-server container on nova
+- capabilities: asr_streaming, asr_offline, tts_synthesis, tts_streaming, get_voices
+- use_when: "voice input/output — speech-to-text and text-to-speech for the robot"
+- skill: workspace/skills/voice-interface.SKILL.md
+- mcp_config: ~/.openclaw/mcp-servers/riva.json
+- notes: "Server on nova-rig (GPU 0). Client SDK inside Docker. Voice commands for hardware require verbal confirmation."
 
 ### airi
 - type: mcp
-- capabilities: avatar_display, expression_control
-- use_when: "visual personality, emotional display"
+- setup: setup/scripts/setup-airi.sh
+- source: moeru-ai/airi
+- capabilities: set_expression, set_lip_sync, set_idle_animation, show_text_overlay, set_avatar_model
+- use_when: "visual personality, emotional display, avatar face on robot screen"
+- skill: workspace/skills/avatar-display.SKILL.md
+- mcp_config: ~/.openclaw/mcp-servers/airi.json
+- notes: "Runs on nova display (HDMI/DP). Lip sync driven by Riva TTS. Expressions map to agent state."
+
+### picogk
+- type: sdk
+- runtime: dotnet (C# / .NET 8.0+)
+- setup: setup/scripts/setup-picogk.sh
+- source: leap71/PicoGK
+- capabilities: create_lattice, create_solid, boolean_ops, generate_stl, apply_modulation
+- use_when: "3D printable part design, lattice structures, computational engineering"
+- skill: workspace/skills/cad-design.SKILL.md
+- mcp_config: ~/.openclaw/mcp-servers/picogk.json
+- output_dir: workspace/cad-output/
+- notes: "C# SDK, not Python. Output STL files. Future: bambu-cli for direct Bambu Lab printing."
 
 ## Self-Improvement Tools
 
