@@ -2,8 +2,7 @@ services:
   postgres:
     image: pgvector/pgvector:pg16
     restart: unless-stopped
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+    network_mode: host
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -12,7 +11,7 @@ services:
       - /mnt/ssd/pgdata:/var/lib/postgresql/data
     mem_limit: 3g
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -h 127.0.0.1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -20,17 +19,17 @@ services:
   elasticsearch:
     image: elasticsearch:8.15.0
     restart: unless-stopped
-    ports:
-      - "${ES_PORT:-9200}:9200"
+    network_mode: host
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
-      - ES_JAVA_OPTS=${ES_JAVA_OPTS:--Xms4g -Xmx4g}
+      - "ES_JAVA_OPTS=${ES_JAVA_OPTS:--Xms4g -Xmx4g}"
+      - http.port=${ES_PORT:-9200}
     volumes:
       - /mnt/ssd/esdata:/usr/share/elasticsearch/data
     mem_limit: 6g
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:${ES_PORT:-9200}/_cluster/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -38,55 +37,26 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
+    network_mode: host
     mem_limit: 1g
-
-  ragflow:
-    image: infiniflow/ragflow:latest
-    restart: unless-stopped
-    ports:
-      - "${RAGFLOW_PORT:-9380}:9380"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      elasticsearch:
-        condition: service_healthy
-    volumes:
-      - /mnt/ssd/ragflow-data:/ragflow/data
-    mem_limit: 6g
 
   memos:
     image: neosmemo/memos:stable
     restart: unless-stopped
-    ports:
-      - "${MEMOS_PORT:-5230}:5230"
+    network_mode: host
     depends_on:
       postgres:
         condition: service_healthy
     environment:
       MEMOS_DRIVER: postgres
-      MEMOS_DSN: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/memos?sslmode=disable"
+      MEMOS_DSN: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@127.0.0.1:${POSTGRES_PORT:-5432}/memos?sslmode=disable"
+      MEMOS_PORT: "${MEMOS_PORT:-5230}"
     mem_limit: 512m
-
-  surfsense:
-    image: ghcr.io/modsetter/surfsense:latest
-    restart: unless-stopped
-    ports:
-      - "${SURFSENSE_PORT:-8000}:8000"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_started
-    environment:
-      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/surfsense?sslmode=disable"
-      REDIS_URL: "redis://redis:6379"
-    mem_limit: 3g
 
   crawl4ai:
     image: unclecode/crawl4ai:latest
     restart: unless-stopped
-    ports:
-      - "${CRAWL4AI_PORT:-11235}:11235"
+    network_mode: host
+    environment:
+      CRAWL4AI_API_PORT: "${CRAWL4AI_PORT:-11235}"
     mem_limit: 3g
