@@ -23,3 +23,13 @@ node_modules/
 
 # acpx session data
 .acpx-sessions/
+
+# Cloned dependency repos (installed by setup-skills-ecosystem.sh)
+setup/deps/
+
+# Installed skill files (populated by setup-skills-ecosystem.sh)
+workspace/skills/ecc/
+workspace/skills/claude-skills/
+workspace/skills/superpowers/
+workspace/skills/bmad/
+workspace/bmad-agents/
