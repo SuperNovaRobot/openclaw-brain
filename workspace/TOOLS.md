@@ -94,8 +94,10 @@
 - type: cli
 - command: gws {service} {resource} {action}
 - services: [gmail, calendar, drive, sheets, docs, chat]
-- use_when: "Google Workspace operations"
-
+- auth: OAuth (run `gws auth login` to authenticate)
+- use_when: "Google Workspace operations — email, calendar, documents"
+- rules: "NEVER send emails or delete events without operator approval. Log write ops to Memos #gws-action."
+- skill: workspace/skills/google-workspace.SKILL.md
 ### gh
 - type: cli
 - command: gh {resource} {action}
