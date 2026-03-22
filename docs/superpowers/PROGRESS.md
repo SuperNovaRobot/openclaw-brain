@@ -118,3 +118,53 @@ Eve runs free.
 - Context engine slot selection via plugins.slots.contextEngine
 - LCM tools (lcm_grep, lcm_describe, lcm_expand_query) register at session runtime, not visible in CLI tools list
 - LCM database created at /home/nova/.openclaw/lcm.db (164KB initial)
+
+
+---
+
+### Task 17: Build LCM→RagFlow Sync Bridge
+**Phase:** Brain v2.0
+**Status:** COMPLETE
+**Date:** 2026-03-22
+
+#### What was done
+- Built batch sync script (`memory/lcm-bridge/sync-to-ragflow.sh`):
+  - Reads LCM summaries from `~/.openclaw/lcm.db` via python3 sqlite3 module
+  - For each summary: builds markdown doc with metadata + content + drill-back instructions
+  - Uploads to RagFlow `lcm-summaries` dataset via multipart file upload
+  - Triggers RagFlow document parsing after upload
+  - Tracks synced IDs in `~/.openclaw/lcm-ragflow-sync/synced-ids.txt`
+  - Supports `--force` flag for re-sync, idempotent by default
+- Built real-time sync hook (`~/.openclaw/workspace/hooks/lcm-ragflow-sync/`):
+  - Fires on `message:sent` events
+  - Queries LCM for most recent summary, compares against `.last-sync-id`
+  - Uploads new summaries to RagFlow in real-time (10s cooldown)
+  - Uses python3 for sqlite3 queries (sqlite3 CLI not installed on nova)
+  - Both batch and hook share sync state for consistency
+- Fixed `create-dataset.sh` to set embedding model (`nomic-embed-text@Ollama`)
+- Hook also committed into repo at `memory/lcm-bridge/hooks/lcm-ragflow-sync/`
+- Fixed dataset embedding model (was empty string, causing parse failures)
+
+#### LCM Database Schema
+- **conversations**: conversation_id, session_id, title, timestamps
+- **messages**: message_id, conversation_id, seq, role, content, token_count
+- **summaries**: summary_id, conversation_id, kind (leaf/condensed), depth, content, token_count, earliest_at, latest_at, descendant_count, model
+- **summary_messages**: links summaries to messages they cover
+- **summary_parents**: DAG parent relationships between summaries
+- **FTS tables**: messages_fts, summaries_fts (porter unicode61 tokenizer)
+- Database: 164KB, currently 0 conversations (LCM just installed, no sessions yet)
+
+#### Testing Results
+- Inserted synthetic test data → batch sync uploaded successfully
+- RagFlow parsing: DONE (1 chunk, 256 tokens) with nomic-embed-text@Ollama
+- Semantic search for "memory architecture" returned the LCM summary (similarity 0.39/0.52 vector)
+- Idempotency verified: second run skipped already-synced summary
+- `--force` flag works: re-syncs everything
+- Cleaned up test data from both LCM and RagFlow after verification
+
+#### Key Findings
+- RagFlow requires multipart file upload (not JSON body) for document creation
+- Parsing trigger: `POST /datasets/{id}/chunks` with `{"document_ids": [...]}`
+- sqlite3 CLI not available on nova; python3 sqlite3 module works fine
+- RagFlow dataset must have embedding_model set or parsing fails with "Model(@None) not authorized"
+- Document content includes drill-back instruction: "use lcm:recall with summary_id {id}"
