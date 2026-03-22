@@ -74,7 +74,7 @@ services:
     mem_limit: 512m
 
   surfsense:
-    image: modsetter/surfsense:latest
+    image: ghcr.io/modsetter/surfsense:latest
     restart: unless-stopped
     ports:
       - "${SURFSENSE_PORT:-8000}:8000"
