@@ -1,0 +1,157 @@
+# Nova Vision System Configuration
+
+camera:
+  device_ip: "169.254.1.222"
+  fps: 30
+  color_resolution: "1080p"  # 1080p, 4k
+  preview_size: [416, 416]   # NN input size
+  mono_resolution: "400p"    # 400p, 720p, 800p
+  auto_reconnect: true
+  reconnect_delay: 2.0       # seconds
+  max_reconnect_attempts: 10
+
+depth:
+  enabled: true
+  preset: "ROBOTICS"         # ROBOTICS, HIGH_DENSITY, HIGH_DETAIL, FACE, DEFAULT
+  median_filter: "KERNEL_5x5"
+  left_right_check: true
+  subpixel: true
+  extended_disparity: false
+  confidence_threshold: 200
+  align_to_rgb: true
+  # Depth filters
+  speckle_filter: true
+  speckle_range: 50
+  temporal_filter: false     # Disabled for robotics (motion blur)
+  spatial_filter: true
+  # Range limits (mm)
+  min_depth: 200             # 20cm
+  max_depth: 10000           # 10m
+
+ir:
+  dot_projector_intensity: 0.0   # 0.0-1.0, disabled by default (eye safety)
+  flood_light_intensity: 0.0     # 0.0-1.0
+
+detection:
+  enabled: true
+  model: "yolov8n"
+  blob_path: "/mnt/ssd/models/nova_vision/blobs/yolov8n_coco_416x416_openvino_2022.1_6shave.blob"
+  input_size: [416, 416]
+  confidence_threshold: 0.5
+  iou_threshold: 0.5
+  num_classes: 80
+  spatial: true                # Enable spatial (3D) detection
+  spatial_bbox_scale: 0.5
+  depth_lower_threshold: 100   # mm
+  depth_upper_threshold: 10000 # mm
+  labels:
+    - person
+    - bicycle
+    - car
+    - motorbike
+    - aeroplane
+    - bus
+    - train
+    - truck
+    - boat
+    - traffic light
+    - fire hydrant
+    - stop sign
+    - parking meter
+    - bench
+    - bird
+    - cat
+    - dog
+    - horse
+    - sheep
+    - cow
+    - elephant
+    - bear
+    - zebra
+    - giraffe
+    - backpack
+    - umbrella
+    - handbag
+    - tie
+    - suitcase
+    - frisbee
+    - skis
+    - snowboard
+    - sports ball
+    - kite
+    - baseball bat
+    - baseball glove
+    - skateboard
+    - surfboard
+    - tennis racket
+    - bottle
+    - wine glass
+    - cup
+    - fork
+    - knife
+    - spoon
+    - bowl
+    - banana
+    - apple
+    - sandwich
+    - orange
+    - broccoli
+    - carrot
+    - hot dog
+    - pizza
+    - donut
+    - cake
+    - chair
+    - sofa
+    - pottedplant
+    - bed
+    - diningtable
+    - toilet
+    - tvmonitor
+    - laptop
+    - mouse
+    - remote
+    - keyboard
+    - cell phone
+    - microwave
+    - oven
+    - toaster
+    - sink
+    - refrigerator
+    - book
+    - clock
+    - vase
+    - scissors
+    - teddy bear
+    - hair drier
+    - toothbrush
+
+tracking:
+  enabled: true
+  tracker_type: "ZERO_TERM_IMAGELESS"  # ZERO_TERM_COLOR_HISTOGRAM, ZERO_TERM_IMAGELESS, SHORT_TERM_IMAGELESS, SHORT_TERM_KCF
+  track_labels: [0]          # 0 = person in COCO
+  max_objects: 20
+  id_policy: "SMALLEST_ID"   # SMALLEST_ID, UNIQUE_ID
+
+face:
+  enabled: false              # Runs on Jetson GPU, enable when models available
+  model_path: "models/face_detection.onnx"
+  recognition_model: "models/face_recognition.onnx"
+  confidence_threshold: 0.6
+  known_faces_dir: "models/known_faces/"
+
+spatial:
+  enabled: true
+  # Proxemic zones (meters)
+  intimate_distance: 0.45
+  personal_distance: 1.2
+  social_distance: 3.6
+  # Navigation
+  obstacle_distance: 0.5     # minimum safe distance
+  navigation_sectors: 3      # left, center, right
+
+output:
+  save_frames: false
+  save_dir: "/tmp/nova_vision/"
+  json_output: true
+  websocket_port: 0           # 0 = disabled
