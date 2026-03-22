@@ -20,3 +20,6 @@ __pycache__/
 
 # Node
 node_modules/
+
+# acpx session data
+.acpx-sessions/

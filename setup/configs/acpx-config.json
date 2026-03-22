@@ -1,0 +1,45 @@
+{
+  "agents": {
+    "claude": {
+      "type": "claude-code",
+      "command": "claude",
+      "capabilities": ["coding", "refactoring", "testing", "documentation"],
+      "maxConcurrentSessions": 3,
+      "sessionTimeout": "30m",
+      "defaultModel": "claude-sonnet-4-20250514",
+      "env": {
+        "CLAUDE_CODE_MAX_TOKENS": "100000"
+      }
+    },
+    "codex": {
+      "type": "codex",
+      "command": "codex",
+      "capabilities": ["coding", "testing"],
+      "maxConcurrentSessions": 2,
+      "sessionTimeout": "15m"
+    },
+    "openclaw": {
+      "type": "openclaw",
+      "command": "openclaw",
+      "capabilities": ["research", "memory", "delegation", "self-eval"],
+      "maxConcurrentSessions": 5,
+      "sessionTimeout": "60m",
+      "env": {
+        "OPENCLAW_MODEL_URL": "http://nova-rig:8080/v1"
+      }
+    }
+  },
+  "defaults": {
+    "outputFormat": "structured",
+    "crashRecovery": true,
+    "promptQueueing": true,
+    "sessionPersistence": true,
+    "logLevel": "info",
+    "logFile": "/mnt/ssd/logs/acpx.log"
+  },
+  "sessions": {
+    "persistDir": "/mnt/ssd/openclaw-brain/.acpx-sessions",
+    "maxAge": "7d",
+    "autoCleanup": true
+  }
+}
