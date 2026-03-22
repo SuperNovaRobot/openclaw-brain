@@ -1,0 +1,31 @@
+{
+  "_comment": "LCM (Lossless Context Management) configuration for OpenClaw. Merge into ~/.openclaw/openclaw.json",
+  "plugins": {
+    "slots": {
+      "contextEngine": "lossless-claw"
+    },
+    "allow": ["lossless-claw"],
+    "entries": {
+      "lossless-claw": {
+        "enabled": true,
+        "config": {
+          "freshTailCount": 32,
+          "contextThreshold": 0.75,
+          "incrementalMaxDepth": -1
+        }
+      }
+    },
+    "installs": {
+      "lossless-claw": {
+        "source": "npm",
+        "spec": "@martian-engineering/lossless-claw"
+      }
+    }
+  },
+  "session": {
+    "reset": {
+      "mode": "idle",
+      "idleMinutes": 10080
+    }
+  }
+}
