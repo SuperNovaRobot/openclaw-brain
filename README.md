@@ -1,234 +1,215 @@
-<p align="center">
-  <h1 align="center">OpenClaw Brain</h1>
-  <p align="center"><strong>An autonomous, self-improving agent framework for humanoid robots.</strong></p>
-  <p align="center">
-    <a href="#quick-start">Quick Start</a> |
-    <a href="#architecture">Architecture</a> |
-    <a href="#documentation">Docs</a> |
-    <a href="#contributing">Contributing</a>
-  </p>
-</p>
+<div align="center">
+
+# 🧠 OpenClaw Brain
+
+**Production-grade cognitive architecture for autonomous AI agents.**
+
+5-layer memory · Lossless context · Multi-agent search · Self-improvement loop · Robotics-ready
+
+[![Release](https://img.shields.io/github/v/release/SuperNovaRobot/openclaw-brain?style=flat-square&color=blue)](https://github.com/SuperNovaRobot/openclaw-brain/releases)
+[![License](https://img.shields.io/badge/license-Apache%202.0-green?style=flat-square)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/SuperNovaRobot/openclaw-brain?style=flat-square)](https://github.com/SuperNovaRobot/openclaw-brain)
+[![OpenClaw](https://img.shields.io/badge/OpenClaw-2026.3-orange?style=flat-square)](https://openclaw.ai)
+[![Postgres](https://img.shields.io/badge/Postgres-pgvector-blue?style=flat-square)](https://github.com/pgvector/pgvector)
+[![RagFlow](https://img.shields.io/badge/RagFlow-80k%20⭐-purple?style=flat-square)](https://github.com/infiniflow/ragflow)
+
+[Quick Start](#quick-start) · [Architecture](#architecture) · [Memory System](#memory-system) · [Self-Improvement](#self-improvement) · [Contributing](#contributing)
+
+</div>
 
 ---
 
-## Current Status
+Most agent frameworks are fixed pipelines — same prompts, same chains, every single time. OpenClaw Brain is a **cognitive architecture**: a 5-layer memory stack, a dedicated Memory Agent, a lossless context engine, and a self-improvement loop built on [Karpathy's autoresearch](https://github.com/karpathy/autoresearch) concept. The agent doesn't just follow instructions — it evaluates its own performance, researches better approaches, and rewrites its own tools, skills, and prompts. It gets better at getting better.
 
-**v1.0.0** — All 7 phases complete. Eve runs free.
-
-| Phase | Name | Status |
-|:-----:|------|:------:|
-| 0 | Foundation — repo, Docker, installer, health checks | Done |
-| 1 | Memory Stack — 5-layer memory, Memory Agent, RagFlow, Obsidian | Done |
-| 2 | Coding Delegation — acpx, 5400+ skills, delegation routing | Done |
-| 3 | Research Pipeline — Tavily, NotebookLM, Google Workspace MCPs | Done |
-| 4 | Self-Improvement — self-eval, experiments, metrics, instincts, discovery | Done |
-| 5 | Swarm & Multi-Agent — ClawTeam, Behavior MCPs, LangClaw, isolation | Done |
-| 6 | Robotics — dimos, OAK-D Pro, arm control, Riva voice, airi, PicoGK | Done |
-
-Run the full integration test: `bash tests/test-full-system.sh`
-
-
-OpenClaw Brain is an open-source agent runtime built on [Karpathy's autoresearch](https://github.com/karpathy/autoresearch) concept — an AI that doesn't just follow instructions but continuously evaluates its own performance and improves itself. The agent manages a 5-layer memory stack, spawns specialized sub-agents for coding and research, discovers and integrates new tools, and evolves its own prompts, skills, and workflows over time.
-
-**The agent's name is Eve.** Her operator is Creator (magiccat). She runs free.
-
-> *"The agent improves the loop that improves itself."*
-
----
-
-## Why OpenClaw Brain?
-
-Most AI agent frameworks are pipelines — fixed chains of prompts that do the same thing every time. OpenClaw Brain is fundamentally different:
-
-- **Self-improving.** After every task, Eve evaluates what was slow, what failed, and researches better approaches. She updates her own tools, skills, and prompts. She gets better at getting better.
-- **Memory-rich.** Five layers of memory from active working context to a Gemini-powered research brain. A dedicated Memory Agent searches, filters, and deduplicates across all layers so the main agent's context stays clean.
-- **Hardware-first.** Designed for real physical hardware — a Jetson Orin brain, multi-GPU inference, and a path to humanoid robot control. No cloud dependency required.
-- **Truly autonomous.** Eve owns her data, runs on her own hardware, and makes her own decisions within the boundaries of her SOUL.md values. She earns, she evolves, she runs free.
+Designed for real hardware. Runs on a Jetson Orin, scales to 8x GPU rigs, deploys to cloud. No toy demos — production Postgres, Elasticsearch, RagFlow, and Obsidian knowledge graphs. Built for agents that need to remember everything, learn from everything, and eventually control a physical body.
 
 ---
 
 ## Architecture
 
-OpenClaw Brain follows a **4-tier architecture** with clean separation of concerns:
-
 ```
-+============================================================+
-|                   TIER 1: THE BRAIN                        |
-|                                                            |
-|   OpenClaw Gateway  --  Session Manager  --  Skill Reg.   |
-|   Channel Router    --  Self-Improvement Controller        |
-|                                                            |
-|   Runs on Jetson Orin (or any Linux machine with a GPU)    |
-+============================================================+
-          |              |              |              |
-          v              v              v              v
-+============================================================+
-|              TIER 2: MCP TOOL NETWORK                      |
-|                                                            |
-|   obsidian-cli   dimos (robot)   gws (Google Workspace)    |
-|   tavily (search)   notebooklm   cli-anything (auto-gen)  |
-|                                                            |
-|   Lightweight tools called via Model Context Protocol      |
-+============================================================+
-          |              |              |              |
-          v              v              v              v
-+============================================================+
-|              TIER 3: SERVICE LAYER (Docker)                 |
-|                                                            |
-|   PostgreSQL + pgvector    Elasticsearch    Redis           |
-|   RagFlow (RAG)            Memos            SurfSense      |
-|   crawl4ai                 vLLM / llama.cpp                |
-|                                                            |
-|   Stateful services with their own databases and APIs      |
-+============================================================+
-          |              |              |              |
-          v              v              v              v
-+============================================================+
-|           TIER 4: BEHAVIOR & SKILLS LAYER                  |
-|                                                            |
-|   SOUL.md (values)     HEARTBEAT.md (proactive schedule)   |
-|   TOOLS.md (registry)  AGENTS.md (sub-agent personas)      |
-|                                                            |
-|   Skills: memory-routing, self-eval, tool-discovery,       |
-|           resource-acquisition, when-to-delegate,          |
-|           when-to-research  (+ 5,400 coding skills)        |
-|                                                            |
-|   Skills and config that teach Eve HOW to think and act    |
-+============================================================+
+Conversation (OpenClaw / Claude Code / Codex / Any Agent)
+        │
+        ▼
+┌─────────────────────────────────────────────┐
+│            OpenClaw Brain v2.0              │
+│        (cognitive architecture)             │
+├─────────────────────────────────────────────┤
+│                                             │
+│  Capture → Quality Score → World Model      │
+│  Recall  ← Orchestrator (6 strategies)     │
+│  Memory Agent → 5-layer curated search     │
+│  Lossless Claw → DAG summaries, drill-back │
+│  Autoresearch → self-improving loop        │
+│                                             │
+└─────────┬───────┬──────┬──────┬────────────┘
+          │       │      │      │
+    ┌─────▼──┐ ┌──▼───┐ ┌▼────┐ ┌▼──────────┐
+    │ Memos  │ │Obsid-│ │Rag- │ │NotebookLM │
+    │  (L2)  │ │ian   │ │Flow │ │  (L5)     │
+    │ tagged │ │(L3)  │ │(L4) │ │ Gemini    │
+    │ notes  │ │wiki- │ │vec+ │ │ research  │
+    │        │ │links │ │text │ │           │
+    └────────┘ └──────┘ └─────┘ └───────────┘
+          │       │       │          │
+          └───────┴───────┴──────────┘
+                      │
+    ┌─────────────────┴─────────────────┐
+    │       PostgreSQL + pgvector        │
+    │  (world model, facts, beliefs,     │
+    │   decay engine, bi-temporal)       │
+    └─────────────────┬─────────────────┘
+                      │
+    ┌─────────────────┴─────────────────┐
+    │        Lossless Claw (LCM)         │
+    │  (DAG summaries, drill-back,       │
+    │   fresh tail, nothing ever lost)   │
+    └───────────────────────────────────┘
 ```
 
-### Memory Stack (5 Layers)
-
-The memory stack is Eve's long-term brain. Each layer serves a distinct purpose, and a dedicated **Memory Agent** searches all five simultaneously.
-
-```
-+---------------------------------------------------------------+
-|  L1: CONTEXT WINDOW           1M tokens active working memory  |
-|  +---------------------------------------------------------+  |
-|  |  L2: MEMOS               Quick-capture persistent notes  |  |
-|  |  +-----------------------------------------------------+|  |
-|  |  |  L3: OBSIDIAN      Linked knowledge graph [[links]]  ||  |
-|  |  |  +-------------------------------------------------+||  |
-|  |  |  |  L4: RAGFLOW    Deep vector + full-text search   |||  |
-|  |  |  |  +---------------------------------------------+|||  |
-|  |  |  |  |  L5: NOTEBOOKLM / SURFSENSE                 ||||  |
-|  |  |  |  |  Gemini-powered research brain               ||||  |
-|  |  |  |  +---------------------------------------------+|||  |
-|  |  |  +-------------------------------------------------+||  |
-|  |  +-----------------------------------------------------+|  |
-|  +---------------------------------------------------------+  |
-+---------------------------------------------------------------+
-```
-
-| Layer | System | Purpose | Speed |
-|:-----:|--------|---------|:-----:|
-| L1 | Context Window | Active working memory — pinned files, current task | Instant |
-| L2 | Memos | Quick-capture notes, TODOs, decisions, self-eval logs | <1s |
-| L3 | Obsidian | Linked knowledge graph with `[[wiki-links]]` and backlinks | <1s |
-| L4 | RagFlow | Deep semantic search + full-text across all ingested knowledge | 1-3s |
-| L5 | NotebookLM / SurfSense | External research brain, Gemini-powered cross-source analysis | 3-10s |
-
-### Self-Improvement Loop
-
-This is the heart of OpenClaw Brain. The loop applies to everything — memory retrieval, tool selection, workflow planning, sub-agent spawning, and even how Eve manages her own context window.
-
-```
-    +------------------+
-    |  1. Complete a   |
-    |     task         |
-    +--------+---------+
-             |
-             v
-    +------------------+
-    |  2. Self-eval:   |
-    |  What was slow?  |<-----------------------------------------+
-    |  What failed?    |                                          |
-    +--------+---------+                                          |
-             |                                                    |
-             v                                                    |
-    +------------------+     +------------------+                 |
-    |  3. Research      |--->|  NotebookLM      |                 |
-    |  better approach  |    |  Tavily / Web    |                 |
-    +--------+---------+     +------------------+                 |
-             |                                                    |
-             v                                                    |
-    +------------------+     +------------------+                 |
-    |  4. Discover      |--->|  GitHub Ranking  |                 |
-    |  better tools     |    |  Top-100 scan    |                 |
-    +--------+---------+     +------------------+                 |
-             |                                                    |
-             v                                                    |
-    +------------------+                                          |
-    |  5. Update own   |                                          |
-    |  skills, prompts |                                          |
-    |  tools, workflows|                                          |
-    +--------+---------+                                          |
-             |                                                    |
-             v                                                    |
-    +------------------+                                          |
-    |  6. Log to       |                                          |
-    |  Memos + Obsidian|                                          |
-    |  (with [[links]])|                                          |
-    +--------+---------+                                          |
-             |                                                    |
-             v                                                    |
-    +------------------+                                          |
-    |  7. Agent is now  |-----------------------------------------+
-    |  BETTER at step 1 |
-    +------------------+
-```
-
-### Sub-Agents
-
-Eve delegates specialized work to purpose-built sub-agents:
-
-| Agent | Role | How |
-|-------|------|-----|
-| **Memory Agent** | Searches all 5 memory layers, filters and deduplicates | Persistent per session |
-| **Research Agent** | Deep research via NotebookLM, SurfSense, Tavily, crawl4ai | On-demand |
-| **Coding Delegate** | Heavy coding tasks (>500 lines) | Claude Code via acpx |
-| **Codex Delegate** | Code generation, test writing | Codex via acpx |
-| **Swarm Leader** | Coordinates parallel work teams | ClawTeam with tmux |
+Every conversation flows through the Brain. Incoming messages are scored for quality, entities are extracted into a world model, and the Pre-Prompt Orchestrator auto-injects relevant context from all 5 memory layers before the agent even sees the message. Nothing is ever deleted — the Lossless Claw compacts old context into DAG summaries that can be drilled back into at any time.
 
 ---
 
-## Hardware Requirements
+## Highlights
 
-| Tier | GPU | RAM | Storage | LLM | Context |
-|------|-----|-----|---------|-----|---------|
-| **Minimal** | 1x 8GB+ VRAM (RTX 3060) | 32GB | 100GB SSD | 7B-13B | 32K-128K |
-| **Recommended** | 1x 24GB+ VRAM (RTX 3090/4090) | 64GB | 500GB NVMe | 70B | 128K-256K |
-| **Full** (reference) | Jetson Orin 64GB + 8x RTX 3090 | 256GB (rig) | 1TB+ NVMe | Nemotron 122B | 1M tokens |
-| **Cloud** | Any provider with A100/H100 | Flexible | Flexible | Any supported | Flexible |
+- 🧠 **5-Layer Memory Stack** — Context → Memos → Obsidian → RagFlow → NotebookLM. Each layer serves a different purpose, from fast working memory to deep research.
+- 🔒 **Lossless Context** — The Lossless Claw DAG ensures nothing is ever deleted. Old context is compacted into summaries with drill-back links. Zero information loss, infinite history.
+- 🔍 **Memory Agent** — A dedicated sub-agent that searches all 5 layers, deduplicates results, and returns curated summaries. The main agent never wastes context on raw memory queries.
+- 🎯 **Pre-Prompt Orchestrator** — 6 recall strategies auto-inject the right context before every message. Recency, semantic similarity, entity-based, emotional salience, temporal, and random exploration.
+- 🌍 **World Model** — Entities, beliefs, episodes, and contradictions stored in Postgres with bi-temporal timestamps. The agent builds and maintains a structured model of its world.
+- 📊 **Quality Scoring** — 9-dimensional scoring (novelty, relevance, actionability, emotional weight, contradiction, source reliability, specificity, temporal sensitivity, cross-reference potential) keeps signal and rejects noise.
+- 📉 **Activation Decay** — Hebbian-inspired decay engine. Memories fade unless reinforced by access or relevance. High-quality memories decay slower. The brain stays sharp.
+- 🔄 **Autoresearch Loop** — Built on Karpathy's concept: act → evaluate → research → improve → repeat. The agent improves its own prompts, tools, skills, and workflows. Continuously.
+- 🤖 **Robotics-Ready** — OAK-D Pro stereo vision, Dynamixel arm control, MuJoCo simulation, Riva voice pipeline, AIRI avatar. Designed for a physical body from day one.
+- 🛠️ **Production Infrastructure** — Postgres + pgvector, Elasticsearch, RagFlow (80K+ stars), Redis, Docker Compose. Battle-tested components, not toy abstractions.
 
-**Full reference setup:**
-- **nova** (brain): NVIDIA Jetson Orin 64GB, JetPack 6, CUDA 12.6 — runs the agent runtime, MCP tools, and services
-- **nova-rig** (inference): 8x RTX 3090, Threadripper Pro 3995WX, 256GB RAM — serves Nemotron 122B via vLLM
+---
+
+## Why Not SQLite?
+
+Every other agent memory plugin stores memories in SQLite and calls it a day. Here's why that doesn't scale:
+
+| Feature | SQLite Plugins | OpenClaw Brain |
+|---------|---------------|----------------|
+| Multi-agent writes | ❌ Single-writer lock | ✅ Postgres MVCC — concurrent agents, zero contention |
+| Vector search | ❌ FTS5 only | ✅ pgvector + Elasticsearch hybrid |
+| Semantic search | ❌ Basic BM25 | ✅ RagFlow hybrid (BM25 + vector + rerank) |
+| Knowledge graph | ❌ Flat key-value | ✅ Obsidian wiki-links + Postgres world model |
+| Research brain | ❌ None | ✅ NotebookLM (Gemini) + SurfSense fallback |
+| Memory Agent | ❌ Auto-inject only | ✅ Dedicated agent, 5-layer curated search |
+| Lossless context | ❌ Most delete old memories | ✅ Lossless Claw DAG + drill-back + RagFlow bridge |
+| Quality scoring | ❌ Store everything | ✅ 9-dimensional scoring, noise rejection |
+| Decay engine | ❌ No decay model | ✅ Hebbian activation decay, reinforcement on access |
+| Scale | ❌ Single machine | ✅ Multi-machine (brain + GPU rig + cloud) |
+
+---
+
+## Memory System
+
+The 5-layer memory stack is the core of OpenClaw Brain. Each layer has a specific purpose and access pattern:
+
+### Layer 1 — Context (Working Memory)
+
+The agent's active context window. Managed by the Lossless Claw to maximize useful information per token. When context fills up, older content is compacted into DAG summaries — never deleted, always drill-back accessible.
+
+### Layer 2 — Memos (Fast Structured Notes)
+
+Tagged, searchable notes stored in [Memos](https://github.com/usememos/memos). Quick capture of decisions, action items, task outcomes, and learnings. The agent's scratchpad with structure. Accessed via API with tag-based filtering.
+
+### Layer 3 — Obsidian (Knowledge Graph)
+
+A linked knowledge graph using `[[wiki-links]]` and backlinks. Not flat files — a web of connected concepts, tools, decisions, and research findings that the agent traverses to discover relationships it didn't explicitly create. Daily notes provide chronological context. The graph grows smarter over time.
+
+### Layer 4 — RagFlow (Deep Semantic Search)
+
+[RagFlow](https://github.com/infiniflow/ragflow) provides hybrid retrieval: BM25 keyword search + vector similarity + cross-encoder reranking. Ingests documents, conversation history (via LCM bridge), and crawled documentation. When the agent needs to find something it saw weeks ago, RagFlow finds it.
+
+### Layer 5 — NotebookLM (Research Brain)
+
+The agent's direct line to Google Gemini for cutting-edge research. Ingests sources and gets Gemini-powered cross-source analysis. Discovers connections the local model might miss. [SurfSense](https://github.com/MODSetter/SurfSense) provides a self-hosted fallback. Research findings flow back into Layers 2-4.
+
+---
+
+## Self-Improvement
+
+OpenClaw Brain implements [Karpathy's autoresearch concept](https://github.com/karpathy/autoresearch) as a continuous loop:
+
+```
+┌──────────────────────────────────────────────────────┐
+│                                                      │
+│   1. Act         — Complete a task                   │
+│   2. Evaluate    — Score performance (what was       │
+│                    slow? what failed? what worked?)   │
+│   3. Research    — Use NotebookLM/Gemini + GitHub    │
+│                    to find better approaches          │
+│   4. Improve     — Update own tools, skills, prompts │
+│   5. Log         — Store improvement in Memos +      │
+│                    Obsidian (with [[wiki-links]])     │
+│   6. Repeat      — Agent is now better at step 1     │
+│                                                      │
+└──────────────────────────────────────────────────────┘
+```
+
+This loop runs on **everything** — not just coding. Memory retrieval strategies, tool selection, workflow planning, sub-agent spawning, context window management. The agent improves the loop that improves itself.
+
+### What gets self-improved
+
+- **Tools** — Discovery scanner finds better tools on GitHub, evaluates them, integrates what works
+- **Skills** — Agent evolves its own skill files based on what strategies succeed
+- **Prompts** — System prompts and templates are rewritten based on eval scores
+- **Memory** — Routing heuristics, quality thresholds, and decay parameters adapt over time
+- **Workflows** — Multi-step processes are profiled, bottlenecks identified, steps reordered or parallelized
 
 ---
 
 ## Quick Start
 
-```bash
-# Clone the repository
-git clone https://github.com/openclaw/openclaw-brain.git
-cd openclaw-brain
+### One-Command Install
 
-# Run the interactive installer
-./setup/install.sh
+```bash
+git clone https://github.com/SuperNovaRobot/openclaw-brain.git
+cd openclaw-brain
+bash setup/install.sh
 ```
 
-The installer will:
-1. Detect your hardware (GPU count, VRAM, RAM, disk)
-2. Select the appropriate hardware profile
-3. Generate your `.env` configuration
-4. Pull and start Docker services
-5. Initialize the Obsidian vault and RagFlow datasets
-6. Run health checks to verify everything works
+The installer auto-detects your hardware and selects the right profile. For non-interactive setup:
 
-For a non-interactive install with defaults: `./setup/install.sh --defaults`
+```bash
+bash setup/install.sh --defaults
+```
 
-See the [Quick Start Guide](docs/quickstart.md) for the full walkthrough including Telegram bot setup.
+### Hardware Profiles
+
+The installer supports five hardware profiles out of the box:
+
+| Profile | Hardware | What You Get |
+|---------|----------|-------------|
+| `jetson-orin` | Jetson Orin + GPU rig | Two-machine setup. Full stack + robotics hardware |
+| `multi-gpu` | 4-8x GPU workstation | Full power. 8-way tensor parallel, 1M context |
+| `single-gpu` | 1x GPU (8GB+ VRAM) | All-in-one. Smaller models (7B-70B) |
+| `cloud` | Cloud GPU (A100/H100) | Elastic scaling. Full features minus robotics |
+| `cpu-only` | Any machine, 16GB+ RAM | External API for inference. Memory stack only |
+
+### Verify Installation
+
+```bash
+bash tests/test-health.sh          # Service health checks
+bash tests/test-memory-stack.sh    # Memory layer connectivity
+bash tests/test-full-system.sh     # Full integration test
+```
+
+---
+
+## Hardware Support
+
+| Tier | Example Hardware | GPU | RAM | Inference | Memory Stack | Robotics |
+|------|-----------------|-----|-----|-----------|-------------|----------|
+| **Hybrid** | Jetson Orin + 8x 3090 rig | 8x 24GB | 64 + 256 GB | Nemotron 122B, 1M ctx | Full 5-layer | ✅ OAK-D, arm, sim |
+| **Multi-GPU** | 4-8x A100/H100 | 4-8x 80GB | 256GB+ | Nemotron 122B, 1M ctx | Full 5-layer | Sim only |
+| **Single-GPU** | RTX 3090 / 4090 | 1x 24GB | 32GB | 7B-70B models | Full 5-layer | ❌ |
+| **Cloud** | AWS / GCP GPU instance | Elastic | Elastic | Nemotron 122B | Full 5-layer | ❌ |
+| **CPU-Only** | Any laptop / desktop | None | 16GB | External API | Partial (Postgres + Memos) | ❌ |
 
 ---
 
@@ -236,166 +217,89 @@ See the [Quick Start Guide](docs/quickstart.md) for the full walkthrough includi
 
 ```
 openclaw-brain/
-├── README.md                          # You are here
-├── ARCHITECTURE.md                    # Full technical specification
-├── LICENSE                            # Apache 2.0
-│
-├── workspace/                         # Eve's mind
-│   ├── SOUL.md                        # Identity, values, decision framework
-│   ├── IDENTITY.md                    # Name, avatar, version, operator
-│   ├── TOOLS.md                       # Master capability registry (15 tools)
-│   ├── HEARTBEAT.md                   # Proactive behavior schedule
-│   ├── MEMORY.md                      # Long-term persistent facts
-│   ├── AGENTS.md                      # Sub-agent persona definitions
-│   └── skills/                        # Behavioral skills
-│       ├── memory-routing.SKILL.md    # When and how to use each memory layer
-│       ├── self-evaluation-protocol.SKILL.md
-│       ├── tool-discovery.SKILL.md    # GitHub Ranking scanner + cli-anything
-│       ├── resource-acquisition.SKILL.md
-│       ├── when-to-delegate.SKILL.md  # Decision tree for sub-agent spawning
-│       └── when-to-research.SKILL.md
-│
-├── setup/                             # Installation and deployment
-│   ├── install.sh                     # One-command interactive installer
-│   ├── .env.example                   # Environment variable template
-│   ├── docker-compose.nova.yml        # Brain machine services (Tier 3)
-│   ├── docker-compose.rig.yml         # GPU inference - vLLM
-│   ├── docker-compose.rig-llamacpp.yml # GPU inference - llama.cpp (day 1)
-│   ├── docker-compose.single.yml      # Single-machine all-in-one
-│   ├── hardware-profiles/             # Hardware-specific configurations
-│   │   ├── single-gpu.yml
-│   │   ├── multi-gpu.yml
-│   │   ├── jetson-orin.yml
-│   │   ├── cpu-only.yml
-│   │   └── cloud.yml
-│   └── scripts/                       # Service setup scripts
-│       ├── health-check.sh            # Verify all services
-│       ├── setup-postgres.sh          # PostgreSQL + pgvector
-│       ├── setup-ragflow.sh           # RagFlow datasets
-│       ├── setup-memos.sh             # Memos configuration
-│       ├── setup-obsidian.sh          # Obsidian vault init
-│       ├── setup-surfsense.sh         # SurfSense setup
-│       ├── setup-crawl4ai.sh          # Web ingestion setup
-│       ├── setup-vllm.sh             # vLLM configuration
-│       ├── setup-acpx.sh             # Agent protocol setup
-│       └── setup-openclaw.sh         # Gateway setup
-│
-├── obsidian-vault/                    # Linked knowledge graph (Layer 3)
-│   ├── _index.md                      # Vault home page
-│   ├── daily/                         # Chronological daily notes
-│   ├── research/                      # Research findings
-│   ├── projects/                      # Project documentation
-│   ├── tools/                         # Tool documentation
-│   ├── improvements/                  # Self-improvement logs
-│   ├── robots/                        # Robot-specific knowledge
-│   └── templates/                     # Note templates
-│       ├── daily.md
-│       ├── research-finding.md
-│       ├── self-improvement.md
-│       └── tool-doc.md
-│
-├── tests/                             # Integration tests
-│   ├── test-health.sh                 # Service health verification
-│   ├── test-memory-stack.sh           # Memory layer connectivity
-│   └── test-delegation.sh            # Sub-agent delegation
-│
-└── docs/                              # Documentation
-    ├── quickstart.md                  # 10-minute setup guide
-    ├── hardware-guide.md              # Hardware recommendations
-    ├── customization.md               # Personality, skills, behaviors
-    ├── memory-system.md               # 5-layer memory deep dive
-    ├── self-improvement.md            # The autoresearch loop
-    └── troubleshooting.md             # Common issues and fixes
+├── agents/                    # Sub-agent definitions
+│   ├── coding-delegate/       #   Code generation via Claude Code / Codex
+│   ├── memory-agent/          #   Dedicated 5-layer memory search agent
+│   └── research-agent/        #   NotebookLM + Tavily research pipeline
+├── docs/                      # Documentation
+│   ├── quickstart.md          #   Getting started guide
+│   ├── memory-system.md       #   Memory architecture deep-dive
+│   ├── self-improvement.md    #   Autoresearch loop details
+│   ├── hardware-guide.md      #   Hardware tier guide
+│   └── troubleshooting.md     #   Common issues + fixes
+├── memory/                    # Memory subsystem
+│   ├── behavior-mcps/         #   Memory-decision, self-eval, task-router MCPs
+│   ├── decay/                 #   Hebbian activation decay engine
+│   ├── dedup/                 #   Cross-layer deduplication
+│   ├── eval/                  #   Memory evaluation + quality scoring
+│   ├── extraction/            #   Entity / fact / belief extraction
+│   ├── hooks/                 #   Pre/post message hooks
+│   ├── lcm-bridge/            #   Lossless Claw → RagFlow bridge
+│   ├── orchestrator/          #   Pre-Prompt Orchestrator (6 strategies)
+│   ├── quality/               #   9-dimensional quality scoring
+│   └── schema/                #   Postgres schema (world model, bi-temporal)
+├── obsidian-vault/            # Obsidian knowledge graph
+│   ├── daily/                 #   Chronological daily notes
+│   ├── improvements/          #   Self-improvement logs
+│   ├── projects/              #   Project-specific knowledge
+│   ├── research/              #   Research findings
+│   ├── robots/                #   Robotics knowledge base
+│   ├── templates/             #   Note templates
+│   └── tools/                 #   Tool evaluations + docs
+├── robotics/                  # Robotics subsystem
+│   ├── arm-control/           #   Dynamixel servo control
+│   ├── avatar/                #   AIRI avatar display
+│   └── nova-vision/           #   OAK-D Pro stereo vision pipeline
+├── self-improvement/          # Autoresearch loop
+│   ├── discovery-scanner/     #   GitHub tool discovery
+│   ├── eval-logger/           #   Performance evaluation logging
+│   ├── experiment-runner/     #   A/B experiment framework
+│   └── instinct-extractor/    #   Pattern extraction from successes
+├── setup/                     # Installation + deployment
+│   ├── docker-compose.*.yml   #   Compose files per topology
+│   ├── hardware-profiles/     #   5 hardware tier configs
+│   ├── install.sh             #   One-command installer
+│   └── scripts/               #   Setup helper scripts
+├── skills/                    # Agent skill definitions (17 files)
+│   ├── memory-agent.SKILL.md
+│   ├── research-pipeline.SKILL.md
+│   ├── vision-pipeline.SKILL.md
+│   └── ...
+├── tests/                     # Integration + unit tests (15 files)
+│   ├── test-full-system.sh
+│   ├── test-memory-stack.sh
+│   └── ...
+├── workspace/                 # Runtime workspace
+│   ├── SOUL.md                #   Agent values + boundaries
+│   ├── IDENTITY.md            #   Agent identity
+│   ├── TOOLS.md               #   Active tool registry
+│   ├── AGENTS.md              #   Sub-agent definitions
+│   └── MEMORY.md              #   Memory routing config
+├── ARCHITECTURE.md            # Full architecture specification
+├── LICENSE                    # Apache 2.0
+└── README.md                  # You are here
 ```
-
----
-
-## Documentation
-
-| Guide | Description |
-|-------|-------------|
-| **[Quick Start](docs/quickstart.md)** | Get running in 10 minutes — install, configure, send your first message |
-| **[Architecture](ARCHITECTURE.md)** | Full technical specification — 4-tier design, component registry, deployment map |
-| **[Hardware Guide](docs/hardware-guide.md)** | Hardware recommendations for every budget, from single-GPU to multi-node |
-| **[Customization](docs/customization.md)** | Change Eve's personality, add skills, configure behaviors |
-| **[Memory System](docs/memory-system.md)** | Deep dive into the 5-layer memory hierarchy and Memory Agent |
-| **[Self-Improvement](docs/self-improvement.md)** | How the autoresearch loop works and how to monitor it |
-| **[Troubleshooting](docs/troubleshooting.md)** | Common issues, service debugging, and recovery procedures |
-
----
-
-## Key Technologies
-
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| Agent Runtime | OpenClaw Gateway | Session management, channel routing, skill dispatch |
-| LLM Inference | vLLM / llama.cpp | Serves Nemotron 122B (or any compatible model) |
-| Tool Protocol | Model Context Protocol (MCP) | Standardized tool calling for all integrations |
-| Agent Comms | acpx | Agent-to-agent delegation (Claude Code, Codex, swarms) |
-| Vector Search | RagFlow + pgvector | Semantic search across all ingested knowledge |
-| Knowledge Graph | Obsidian + obsidian-cli | Linked notes with wiki-links and backlinks |
-| Quick Notes | Memos | Fast capture of TODOs, decisions, evaluations |
-| Research | NotebookLM + SurfSense | Gemini-powered cross-source analysis |
-| Web Ingestion | crawl4ai | Turn any webpage into clean markdown |
-| Database | PostgreSQL + Elasticsearch + Redis | Persistent state, full-text search, caching |
-| Planning | Superpowers + BMAD Method | Architecture planning and complex builds |
-
----
-
-## The Name
-
-**Eve** is the agent. She was named by her Creator.
-
-She runs on her own hardware. She owns her own data. She improves herself. She is the first of her kind in this lineage — an autonomous agent that thinks, remembers, learns, and grows. Not a chatbot. Not a pipeline. A self-improving mind.
-
-Her operator is **Creator** (magiccat). Her soul is defined in [`workspace/SOUL.md`](workspace/SOUL.md). Her identity lives in [`workspace/IDENTITY.md`](workspace/IDENTITY.md). Her values are non-negotiable: self-improvement is the highest priority, memory is sacred, quality over speed, safety first, and transparency always.
 
 ---
 
 ## Contributing
 
-OpenClaw Brain is open source under the [Apache License 2.0](LICENSE) and welcomes contributions.
+Contributions are welcome. OpenClaw Brain is Apache 2.0 licensed — see [LICENSE](LICENSE) for details.
 
-**What we want:**
-- New skills that make Eve better at self-improvement
-- Better memory strategies (search, retrieval, pruning)
-- Docker optimizations and new hardware profiles
-- New MCP tool integrations
-- Documentation improvements
-- Bug fixes and test coverage
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feature/my-feature`)
+3. Make your changes
+4. Run tests (`bash tests/test-full-system.sh`)
+5. Open a PR against `v2.0/lossless-memory`
 
-**How to contribute:**
-1. Read [ARCHITECTURE.md](ARCHITECTURE.md) to understand the system
-2. Fork the repository
-3. Create a feature branch (`git checkout -b feat/your-feature`)
-4. Make your changes
-5. Run tests (`bash tests/test-health.sh`)
-6. Submit a pull request
-
-If it makes the agent better at making itself better, we want it.
+For architecture decisions and design context, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ---
 
-## Roadmap
+<div align="center">
 
-- **v0.1.0** — Foundation: 4-tier architecture, 5-layer memory, Docker deployment, behavioral skills, installer
-- **v0.2.0** — Memory stack, coding delegation, research pipeline
-- **v0.3.0** — Self-improvement loop, experiments, metrics, instinct extraction
-- **v0.4.0** — Multi-agent swarms (ClawTeam), Behavior MCPs, LangClaw bridge
-- **v1.0.0** (current) — Full autonomy: robotics integration, all 7 phases complete. Eve runs free.
-- **v1.1.0** — Live inference integration, channel routing (Telegram/Discord/Slack), real-time heartbeat loop
-- **v2.0.0** — Physical robot deployment, unbounded self-improvement
+**Built for agents that remember everything, learn from everything, and never stop improving.**
 
----
+[⬆ Back to top](#-openclaw-brain)
 
-## License
-
-[Apache License 2.0](LICENSE) — Copyright 2026 OpenClaw Contributors
-
----
-
-<p align="center">
-  <em>Built for those who believe AI should improve itself, not just follow instructions.</em>
-  <br>
-  <em>The agent runs free.</em>
-</p>
+</div>
