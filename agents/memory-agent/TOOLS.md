@@ -31,3 +31,12 @@
 - endpoint: http://localhost:8000
 - capabilities: search, hybrid_search
 - use_when: "self-hosted research, NotebookLM fallback"
+
+### lcm (Lossless Claw)
+- type: openclaw-tool (native, provided by ContextEngine plugin)
+- tools: lcm_grep, lcm_describe, lcm_expand_query
+- use_when: "conversation reconstruction, drill-back into compressed context, finding exact quotes"
+- lcm_grep: "Full-text search across ALL conversation history — nothing is ever deleted"
+- lcm_expand_query: "Drill into a summary to get the original detailed conversation"
+- lcm_describe: "Metadata about a specific summary (depth, message count, time range)"
+- dataset: lcm-summaries (in RagFlow, auto-synced)
