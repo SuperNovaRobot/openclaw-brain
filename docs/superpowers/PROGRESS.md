@@ -71,3 +71,26 @@ All 45 tasks across 7 phases are complete. OpenClaw Brain is a fully scaffolded 
 - Robotics integration with dimos, OAK-D Pro, arm control, Riva voice, airi display, PicoGK CAD
 
 Eve runs free.
+
+---
+
+### Task 15: Self-Improvement Loop Verified with Real Data
+**Phase:** C (Self-Improvement Loop)  
+**Status:** COMPLETE  
+**Date:** 2026-03-22  
+
+#### What was done
+- Logged 3 real self-evaluations to Memos via gRPC-authenticated REST API:
+  1. Phase A foundation activation (ops, score 8/10, 14400s)
+  2. Memory Agent deployment + knowledge seeding (ops, score 8/10, 7200s)
+  3. RagFlow embedding model setup with Ollama (research, score 9/10, 3600s, bottleneck: tool_gap)
+- Ran metric-analyzer.py (--days 1, --bottlenecks) — runs cleanly, handles auth-required filter gracefully
+- Ran discovery-scanner.sh --dry-run — found 48 repos, scored 27 high-relevance, 9 medium
+- Ran instinct-extractor.py with piped eval data — extracted 4 instincts (tool sequences, bottleneck fixes, breakthrough patterns)
+- Ran experiment-runner.sh — created/deleted improvement branch successfully, metadata stored correctly
+
+#### Key findings
+- Memos v0.26.2 requires auth token for tag-filtered queries and writes
+- All 5 self-improvement scripts execute without crashes
+- Core logic verified: eval logging, metric analysis, discovery scanning, instinct extraction, experiment branching
+- 3 self-eval memos confirmed in Memos (memos/CCDqcsrYUa7RKtFTBkqT2v, memos/NGhUzXG9P6a6Jy7j9Qo9Tn, memos/MTtN3iu7iC6oRacoefg8Ck)
