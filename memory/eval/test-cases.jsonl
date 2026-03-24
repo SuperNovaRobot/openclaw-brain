@@ -1,0 +1,15 @@
+{"query": "what model does Eve use", "expected": ["glm-5", "zai"], "layer": "memos"}
+{"query": "what is the Memos API URL", "expected": ["100.76.233.80", "5230"], "layer": "memos"}
+{"query": "how does Eve delegate coding", "expected": ["acpx", "Claude", "Codex"], "layer": "any"}
+{"query": "what is Eve mission", "expected": ["robot", "robotic body", "physical"], "layer": "memos"}
+{"query": "what happened with RagFlow auth", "expected": ["API key", "wrong endpoint", "localhost"], "layer": "memos"}
+{"query": "what embedding model is used", "expected": ["nomic-embed-text", "ollama"], "layer": "memos"}
+{"query": "where are services running", "expected": ["nova-rig", "100.76.233.80"], "layer": "memos"}
+{"query": "what is lossless claw", "expected": ["LCM", "DAG", "compaction", "context"], "layer": "any"}
+{"query": "how many memory layers", "expected": ["5", "five", "layers"], "layer": "any"}
+{"query": "what is the obsidian vault path", "expected": ["/mnt/ssd/obsidian-vault", "obsidian"], "layer": "memos"}
+{"query": "what plugins are loaded", "expected": ["lossless-claw", "telegram", "acpx", "brain-driver"], "layer": "memos"}
+{"query": "what is the gateway port", "expected": ["18789"], "layer": "memos"}
+{"query": "who created Eve", "expected": ["SuperNova", "Creator"], "layer": "memos"}
+{"query": "what search tools are available", "expected": ["Brave", "Tavily", "crawl4ai"], "layer": "any"}
+{"query": "what is the self improvement loop", "expected": ["autoresearch", "Karpathy", "experiment", "evaluate"], "layer": "any"}

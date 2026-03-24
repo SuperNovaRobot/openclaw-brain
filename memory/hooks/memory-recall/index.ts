@@ -13,7 +13,7 @@ function getMemosToken(): string {
       "-sf", "-X", "POST",
       "http://100.76.233.80:5230/memos.api.v1.AuthService/SignIn",
       "-H", "Content-Type: application/json",
-      "-d", JSON.stringify({passwordCredentials:{username:"openclaw",password:process.env.MEMOS_PASSWORD||"YOUR_MEMOS_PASSWORD"}})
+      "-d", JSON.stringify({passwordCredentials:{username:"openclaw",password:process.env.MEMOS_PASSWORD||"changeme"}})
     ], { timeout: 5000 }).toString();
     const data = JSON.parse(result);
     return data.accessToken || "";
